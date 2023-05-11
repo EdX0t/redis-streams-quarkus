@@ -8,24 +8,41 @@ services:
     command: redis-server --save 20 1 --loglevel notice
     volumes:
       - redis_data:/data
-#  es01:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
-#    container_name: els
-#    environment:
-#      - node.name=es01
-#      - discovery.type=single-node
-#      - bootstrap.memory_lock=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - els_data:/usr/share/elasticsearch/data
-#    ports:
-#      - "9200:9200"
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+    container_name: els
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - els_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.10
+    container_name: kibana
+    ports:
+      - "5601:5601"
+
+  log-producer:
+    image: quarkus/log-producer-jvm
+    container_name: log-producer
+    ports:
+      - "8080:8080"
+
+#  log-consumer:
+#    image: quarkus/log-consumer-jvm
+#    container_name: log-consumer
+
 volumes:
   redis_data:
     driver: local
-#  els_data:
-#    driver: local
+  els_data:
+    driver: local
